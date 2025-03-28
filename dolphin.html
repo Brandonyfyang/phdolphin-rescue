@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>PhDolphin Rescue v1.0</title>
+    <style>
+        :root {
+            --lab-blue: #2b3a67;
+            --dolphin-pink: #ff7aa2;
+        }
+
+        body {
+            background: url('image/xht.jpg') repeat; /* 实验室网格纹理 */
+            font-family: 'Courier New', monospace;
+        }
+
+        .game-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            margin: 20px auto;
+            border: 3px dashed var(--lab-blue);
+        }
+
+        .mole {
+            width: 80px;
+            cursor: crosshair;
+            transition: all 1s;
+            filter: drop-shadow(0 0 5px var(--dolphin-pink));
+        }
+
+        #bubble {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            display: none;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center">🦉 小海豚压力粉碎机 v1.0 🧪</h1>
+
+    <!-- 打地鼠游戏区 -->
+    <div class="game-container">
+        <img src="image/buaa1.jpg" class="mole" onclick="whack(this)">
+        <div id="bubble"></div>
+    </div>
+
+    <!-- 拒信转换器 -->
+    <div style="text-align:center; margin:40px">
+        <textarea id="rejectionLetter" placeholder="输出你的不开心吧" rows="4"></textarea>
+        <button onclick="alchemy()">🔮 魔法转换</button>
+        <div id="output" style="font-size: 4em; margin:20px"></div>
+    </div>
+
+    <!-- 学术垃圾话生成器 -->
+    <div style="background: #fff3f8; padding:40px">
+        <button onclick="generateTrashTalk()">🗑️ 生成学术垃圾话</button>
+        <p id="trashTalk"></p>
+    </div>
+
+<script>
+
+const academicTerms = [
+    "交给小笨熊吧", "和小笨熊见面倒计时6天!", "和小笨熊在一起已经180天啦", 
+    "毕业旅行倒计时90天", "党支部换届倒计时", "Deepseek帮忙做毕设","回家倒计时ing","临走前吃遍北京所有好吃的",
+    "即将告别多人宿舍生活","Offer雨之前最后的宁静"
+];
+
+// 打地鼠逻辑
+
+function spawnMole() {
+    const moleImages = [
+        'image/xbx1.jpg',
+        'image/xbx2.jpg',
+        'image/xbx.jpg'
+    ];
+    const container = document.querySelector('.game-container');
+    const mole = document.createElement('img');
+    //mole.src = `image/xbx.jpg`; 
+    mole.src = moleImages[Math.floor(Math.random() * moleImages.length)];
+    mole.style.position = 'absolute';
+    mole.style.left = Math.random()*500 + 'px';
+    mole.style.top = Math.random()*300 + 'px';
+    mole.onclick = function() {
+        this.style.transform = 'scale(0)';
+        showBubble(["CUHK PhD Offer", "Polyu EEE PhD Offer", "NUS PhD Offer","THU PhD Offer","HKU PhD Offer","HKPFS","Red Bird Scholarship","1.9w PGS"]);
+        setTimeout(() => container.removeChild(this), 100);
+    }
+    container.appendChild(mole);
+    setTimeout(() => container.removeChild(mole), 1000);
+}
+/*
+function spawnMole() {
+    // 1. 创建图片路径数组
+    const moleImages = [
+        'image/xbx1.jpg',
+        'image/xbx2.jpg',
+        'image/xbx.jpg'
+    ];
+
+    const container = document.querySelector('.game-container');
+    const mole = document.createElement('img');
+    
+    // 2. 随机选择图片
+    mole.src = moleImages[Math.floor(Math.random() * moleImages.length)];
+    
+    // 3. 添加视觉反馈样式
+    mole.style.cssText = `
+        position: absolute;
+        left: ${Math.random()*500}px;
+        top: ${Math.random()*300}px;
+        cursor: pointer;
+        transition: transform 0.3s, opacity 0.2s;
+        filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+    `;
+
+    // 4. 点击事件处理
+    mole.onclick = function() {
+        this.style.transform = 'scale(0) rotate(360deg)';
+        this.style.opacity = '0';
+        showBubble([...]);
+        setTimeout(() => {
+            if(this.parentElement) {
+                this.parentElement.removeChild(this);
+            }
+        }, 300);
+    }
+
+    // 5. 自动消失逻辑优化
+    const removeTimer = setTimeout(() => {
+        mole.style.opacity = '0';
+        container.removeChild(mole);
+    }, 1500); // 调整为1.5秒消失时间
+
+    // 6. 预加载图片（可选）
+    const preloadImg = new Image();
+    preloadImg.src = mole.src;
+
+    container.appendChild(mole);
+}
+// 气泡吐槽
+*/
+function showBubble(texts) {
+    const bubble = document.getElementById('bubble');
+
+    const randomSize = Math.random() * 1.5 + 1;
+    bubble.style.fontSize = `${randomSize}rem`;
+
+    bubble.style.left = Math.random()*400 + 'px';
+    bubble.style.top = Math.random()*300 + 'px';
+    bubble.innerHTML = texts[Math.floor(Math.random()*texts.length)];
+    bubble.style.display = 'block';
+    setTimeout(() => bubble.style.display = 'none', 1000);
+}
+
+
+function alchemy() {
+    const emojis = ['🐬', '🎯', '✨', '🎉', '❤️', '🌈'];
+    const sentence = academicTerms[Math.floor(Math.random() * academicTerms.length)];
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const output = `
+        <div style="
+            animation: float 2s infinite;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+        ">
+            ${sentence}<br>
+            <span style="font-size: 1.5em">${emoji}</span>
+        </div>
+    `;
+    document.getElementById('output').innerHTML = output;
+}
+
+function generateTrashTalk() {
+    const subjects = ["漫长的申请长跑", "这篇论文", "毕设的ddl", "实验室的坏老师"];
+    const verbs = ["以及", "就像", "坏过"];
+    const metaphors = [
+        "新主楼睡觉的人", 
+        "港科广的地理位置",
+        "我生产的学术垃圾",
+        "更新超慢的电视剧"
+    ];
+    const trash = `${subjects[Math.floor(Math.random()*subjects.length)]} 
+        ${verbs[Math.floor(Math.random()*verbs.length)]} 
+        ${metaphors[Math.floor(Math.random()*metaphors.length)]}`;
+    document.getElementById('trashTalk').innerHTML = trash;
+}
+
+// 游戏初始化
+setInterval(spawnMole, 1500);
+</script>
+
+<!-- 隐藏彩蛋 -->
+<div style="position:fixed; bottom:10px; right:10px; cursor: pointer;" 
+    onclick="this.innerHTML='🎁 下周末的行程已预订！'">
+    🧪
+</div>
+</body>
+</html>
